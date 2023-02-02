@@ -14,14 +14,12 @@
             Welcome to Laravel+Bootsrap 5
         </h1>
 
-        <p class="col-md-8 fs-4">Using a series of utilities, you can create this jumbotron, just like the one in previous versions of Bootstrap. Check out the examples below for how you can remix and restyle it to your liking.</p>
-        <button class="btn btn-primary btn-lg" type="button">Example button</button>
+        <div>
+            <a class="btn btn-primary my-3"  href="{{route('admin.projects.index')}}">Vai ai progetti</a>
+        </div>
+        
     </div>
 </div>
 
-<div class="content">
-    <div class="container">
-        <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Tempora temporibus, dicta nemo aliquam totam nisi deserunt soluta quas voluptatum ab beatae praesentium necessitatibus minus, facilis illum rerum officiis accusamus dolores!</p>
-    </div>
-</div>
+
 @endsection

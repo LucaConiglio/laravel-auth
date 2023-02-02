@@ -16,6 +16,9 @@
 
                     {{ __('You are logged in!') }}
                 </div>
+                <div class="text-center my-3">
+                    <a class="text-decoration-none" href="{{route('admin.projects.index')}}">vai all'index</a>
+                </div>
             </div>
         </div>
     </div>
