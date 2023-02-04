@@ -5,6 +5,9 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Project;
+use Hamcrest\Description;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class ProjectController extends Controller
 {
@@ -27,6 +30,7 @@ class ProjectController extends Controller
      */
     public function create()
     {
+
         return view("admin.projects.create");
     }
 
@@ -38,8 +42,30 @@ class ProjectController extends Controller
      */
     public function store(Request $request)
     {
-        $data = $request->all();
-        $project = Project::create($data);
+        $data = $request->validate([
+
+            "name" => "required|min:3|max:20",
+            "description" => "required|string",
+            "cover_img" => "file",
+            "github_link" => "string"
+        ]);
+        
+
+        if(key_exists("cover_img", $data)) {
+            //con storage stiamo dicendo salva con il metodo put dentro la cartella projets
+            $path = Storage::put("projects", $data["cover_img"]);
+        }
+
+        
+        $project = Project::create([
+            ...$data,
+        //a bd vado a salvare solamente il percorso 
+            "cover_img" => $path ?? '',
+        // recuperiamo l'id dagli user cioé user_id é uguale all'utente loggato
+            "user_id" => Auth::id()
+        ]);
+
+
 
         return redirect()->route("admin.projects.show", $project->id);
     }
@@ -76,12 +102,35 @@ class ProjectController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
+
+
     {
         $project = Project::findOrFail($id);
 
-        $data = $request->all();
+        $data = $request->validate([
+
+            "name" => "required|min:3|max:20",
+            "description" => "required|string",
+            "cover_img" => "file",
+            "github_link" => "string"
+        ]);
+
+        if(key_exists("cover_img", $data)) {
+            //con storage stiamo dicendo salva con il metodo put dentro la cartella projets
+            $path = Storage::put("projects", $data["cover_img"]);
+
+
+            Storage::delete($project->cover_img);
+        }
+
+        $project->update([
+            ...$data,
+            // Se $path ha un valore, significa che abbiamo caricato un nuovo file.
+            // Altrimenti, usiamo il percorso vecchio tramite $post->cover_img
+            "cover_img" => $path ?? $project->cover_img
+        ]);
         
-        $project->update($data);
+        
 
         return redirect()->route("admin.projects.show", $id);
     }
@@ -95,6 +144,10 @@ class ProjectController extends Controller
     public function destroy($id)
     {
         $project = Project::findOrFail($id);
+
+        if ($project->cover_img) {
+            Storage::delete($project->cover_img);
+        }
         
         $project->delete();
 

@@ -9,7 +9,7 @@
   <h1>Edit Project</h1>
 
   
-  <form action="{{ route('admin.projects.update', $project->id) }}" method="POST">
+  <form action="{{ route('admin.projects.update', $project->id) }}" method="POST" enctype="multipart/form-data">
     @csrf()
     @method('PUT')
 
@@ -31,13 +31,13 @@
     </div>
 
     <div class="mb-3">
-      <label class="form-label">Descrizione</label>
-      <textarea name="description" cols="30" rows="5" class="form-control">{{$project->description}}"</textarea>
+      <label class="form-label">Description</label>
+      <textarea name="description" cols="30" rows="5" class="form-control">{{$project->description}}</textarea>
     </div>
 
     <div class="mb-3">
-      <label class="form-label">Immagine di copertina</label>
-      <input type="text" class="form-control" name="cover_img" value="{{$project->cover_img}}">
+      <label class="form-label">Cover image</label>
+      <input type="file" class="form-control" name="cover_img">
     </div>
 
     <div class="mb-3">
